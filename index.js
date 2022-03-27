@@ -95,6 +95,7 @@ const typeDefs = gql`
       quantity: Int!
       price: Float!
       onSale: Boolean!
+      image: String!
    }
 `;
 
