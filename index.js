@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server');
 
+// products
 const products = [
    {
       id: '53a0724c-a416-4cac-ae45-bfaedce1f147',
@@ -84,13 +85,33 @@ const products = [
    },
 ];
 
+// product categories
+const categories = [
+   {
+      id: 'c01b1ff4-f894-4ef2-b27a-22aacc2fca70',
+      name: 'Kitchen',
+   },
+   {
+      id: '34115aac-0ff5-4859-8f43-10e8db23602b',
+      name: 'Garden',
+   },
+   {
+      id: 'd914aec0-25b2-4103-9ed8-225d39018d1d',
+      name: 'Sports',
+   },
+];
+
 const typeDefs = gql`
    type Query {
       products: [Product!]!
       singleProduct(id: ID!): Product
+      categories: [Category!]!
+      category(id: ID!): Category
    }
 
+   # product schema
    type Product {
+      id: ID!
       name: String!
       description: String!
       quantity: Int!
@@ -98,19 +119,32 @@ const typeDefs = gql`
       onSale: Boolean!
       image: String!
    }
+
+   # category schema
+   type Category {
+      id: ID!
+      name: String!
+   }
 `;
 
 const resolvers = {
    Query: {
-      products: () => products,
+      // all products
+      products: (parent, args, context) => products,
+
+      // single product
       singleProduct: (parent, args, context) => {
-         const productId = args.id;
+         const { id } = args;
+         return products.find((item) => item.id === id);
+      },
 
-         const product = products.find((item) => item.id === productId);
+      // categories
+      categories: (parent, args, context) => categories,
 
-         if (!product) return null;
-
-         return product;
+      // single category
+      category: (parent, args, context) => {
+         const { id } = args;
+         return categories.find((item) => item.id === id);
       },
    },
 };
