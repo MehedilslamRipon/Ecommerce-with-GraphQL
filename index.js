@@ -87,6 +87,7 @@ const products = [
 const typeDefs = gql`
    type Query {
       products: [Product!]!
+      singleProduct(id: ID!): Product
    }
 
    type Product {
@@ -101,8 +102,15 @@ const typeDefs = gql`
 
 const resolvers = {
    Query: {
-      products: () => {
-         return products;
+      products: () => products,
+      singleProduct: (parent, args, context) => {
+         const productId = args.id;
+
+         const product = products.find((item) => item.id === productId);
+
+         if (!product) return null;
+
+         return product;
       },
    },
 };
